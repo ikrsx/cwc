@@ -31,3 +31,19 @@ int count_words(FILE **fp) {
 
   return wcount;
 }
+
+int count_lines(FILE **fp) {
+  fseek(*fp, 0, SEEK_SET);
+
+  int lcount = 0;
+  char fchar = fgetc(*fp);
+
+  while (fchar != EOF) {
+    if (fchar == '\n')
+      lcount++;
+
+    fchar = fgetc(*fp);
+  }
+
+  return lcount;
+}
