@@ -1,4 +1,4 @@
-#include "../include/mywc.h"
+#include "../include/cwc.h"
 
 #include <stdio.h>
 

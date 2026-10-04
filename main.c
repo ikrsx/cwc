@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "include/mywc.h"
+#include "include/cwc.h"
 
 int main(int argc, char *argv[]) {
   FILE *fp = fopen(argv[1], "r");
@@ -20,6 +20,7 @@ int main(int argc, char *argv[]) {
   printf("Charecters: %d\n", ccount);
   printf("Words: %d\n", wcount);
   printf("Lines: %d\n", lcount);
+  printf("Total Bytes: %d\n", ccount);
 
   fclose(fp);
 

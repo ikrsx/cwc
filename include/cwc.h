@@ -1,9 +1,9 @@
 #include <stdio.h>
 
-#ifndef MYWC_H
+#ifndef CWC_H
 
 int count_chars(FILE **fp);
 int count_words(FILE **fp);
 int count_lines(FILE **fp);
 
-#endif // MYWC_H
+#endif // CWC_H

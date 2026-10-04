@@ -1,2 +1,2 @@
 all:
-	gcc main.c impl/mywc.c -o mywc
+	gcc main.c impl/cwc.c -o cwc
