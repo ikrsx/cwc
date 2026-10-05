@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "include/cwc.h"
+#include "include/cmdopts.h"
 
 int main(int argc, char *argv[]) {
   FILE *fp = fopen(argv[1], "r");
@@ -12,15 +12,7 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
-  int ccount = count_chars(&fp);
-  int wcount = count_words(&fp);
-  int lcount = count_lines(&fp);
-
-  printf("---- %s ----\n", argv[1]);
-  printf("Charecters: %d\n", ccount);
-  printf("Words: %d\n", wcount);
-  printf("Lines: %d\n", lcount);
-  printf("Total Bytes: %d\n", ccount);
+  default_option(&fp, argv[1]);
 
   fclose(fp);
 
