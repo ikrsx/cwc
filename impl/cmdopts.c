@@ -28,41 +28,30 @@ void select_command(char *arg) {
   } else if (strncmp(arg, "--characters", sizeof("--characters")) == 0 ||
              strncmp(arg, "-c", sizeof("-c")) == 0) {
 
-    if (fp == NULL) {
-      printf("Error: file does not seems to exists.\n");
-    } else {
-      printf("Characters: %d\n", count_chars(&fp));
-    }
+    (fp == NULL) ? printf("Error: file does not seems to exists.\n")
+                 : printf("Characters: %d\n", count_chars(&fp));
 
   } else if (strncmp(arg, "--words", sizeof("--words")) == 0 ||
              strncmp(arg, "-w", sizeof("-w")) == 0) {
 
-    if (fp == NULL) {
-      printf("Error: file does not seems to exists.\n");
-    } else {
-      printf("Words: %d\n", count_words(&fp));
-    }
+    (fp == NULL) ? printf("Error: file does not seems to exists.\n")
+                 : printf("Words: %d\n", count_words(&fp));
 
   } else if (strncmp(arg, "--lines", sizeof("--lines")) == 0 ||
              strncmp(arg, "-l", sizeof("-l")) == 0) {
 
-    if (fp == NULL) {
-      printf("Error: file does not seems to exists.\n");
-    } else {
-      printf("Lines: %d\n", count_lines(&fp));
-    }
+    (fp == NULL) ? printf("Error: file does not seems to exists.\n")
+                 : printf("Lines: %d\n", count_lines(&fp));
 
   } else if (strncmp(arg, "--bytes", sizeof("--bytes")) == 0 ||
              strncmp(arg, "-b", sizeof("-b")) == 0) {
 
-    if (fp == NULL) {
-      printf("Error: file does not seems to exists.\n");
-    } else {
-      printf("Words: %d\n", count_words(&fp));
-    }
+    (fp == NULL) ? printf("Error: file does not seems to exists.\n")
+                 : printf("Words: %d\n", count_words(&fp));
 
   } else {
-    default_option(&fp);
+    (fp == NULL) ? printf("Error: file does not seems to exists.\n")
+                 : default_option(&fp);
   }
 }
 
