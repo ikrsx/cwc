@@ -20,29 +20,47 @@ int is_option(char *arg) {
 }
 
 void select_command(char *arg) {
-  if (is_option(arg) != 0) {
-    fp = fopen(arg, "r");
+  if (strncmp(arg, "--version", sizeof("--version")) == 0 ||
+      strncmp(arg, "-v", sizeof("-v")) == 0) {
 
-    if (fp == NULL) {
-      printf("Error: %s is not a valid option or filename\n", arg);
-    }
-
-    printf("---- %s ----\n", arg);
-  } else if (strncmp(arg, "--version", sizeof("--version")) == 0 ||
-             strncmp(arg, "-v", sizeof("-v")) == 0) {
     printf("cwc version: 0.0.1-alpha\n");
+
   } else if (strncmp(arg, "--characters", sizeof("--characters")) == 0 ||
              strncmp(arg, "-c", sizeof("-c")) == 0) {
-    printf("Characters: %d\n", count_chars(&fp));
+
+    if (fp == NULL) {
+      printf("Error: file does not seems to exists.\n");
+    } else {
+      printf("Characters: %d\n", count_chars(&fp));
+    }
+
   } else if (strncmp(arg, "--words", sizeof("--words")) == 0 ||
              strncmp(arg, "-w", sizeof("-w")) == 0) {
-    printf("Words: %d\n", count_words(&fp));
+
+    if (fp == NULL) {
+      printf("Error: file does not seems to exists.\n");
+    } else {
+      printf("Words: %d\n", count_words(&fp));
+    }
+
   } else if (strncmp(arg, "--lines", sizeof("--lines")) == 0 ||
              strncmp(arg, "-l", sizeof("-l")) == 0) {
-    printf("Lines: %d\n", count_lines(&fp));
+
+    if (fp == NULL) {
+      printf("Error: file does not seems to exists.\n");
+    } else {
+      printf("Lines: %d\n", count_lines(&fp));
+    }
+
   } else if (strncmp(arg, "--bytes", sizeof("--bytes")) == 0 ||
              strncmp(arg, "-b", sizeof("-b")) == 0) {
-    printf("Bytes: %d\n", count_chars(&fp));
+
+    if (fp == NULL) {
+      printf("Error: file does not seems to exists.\n");
+    } else {
+      printf("Words: %d\n", count_words(&fp));
+    }
+
   } else {
     default_option(&fp);
   }
@@ -63,16 +81,14 @@ int parse_command(int argc, char **argv) {
   int i = 1;
 
   if (argc == 1) {
-    printf("Error: No valid option or filename supplied\n");
+    printf("Error: Required arguments not supplied.\n");
     return EXIT_FAILURE;
   }
 
-  while (argv[i] != NULL) {
+  while (i != argc) {
     select_command(argv[i]);
     i++;
   }
-
-  fclose(fp);
 
   return EXIT_SUCCESS;
 }
