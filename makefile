@@ -1,2 +1,2 @@
 all:
-	gcc main.c impl/cwc.c impl/cmdopts.c -o cwc
+	gcc main.c impl/operations.c impl/parser.c impl/stack.c -o cwc

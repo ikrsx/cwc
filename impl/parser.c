@@ -3,10 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../include/cmdopts.h"
-#include "../include/cwc.h"
-
-static FILE *fp;
+#include "../include/operations.h"
+#include "../include/parser.h"
+#include "../include/stack.h"
 
 int is_option(char *arg) {
   regex_t regex;
@@ -19,7 +18,7 @@ int is_option(char *arg) {
   return EXIT_FAILURE;
 }
 
-void select_command(char *arg) {
+void init_command(char *arg, FILE *fp) {
   if (strncmp(arg, "--version", sizeof("--version")) == 0 ||
       strncmp(arg, "-v", sizeof("-v")) == 0) {
 
@@ -50,34 +49,44 @@ void select_command(char *arg) {
                  : printf("Words: %d\n", count_words(&fp));
 
   } else {
-    (fp == NULL) ? printf("Error: file does not seems to exists.\n")
-                 : default_option(&fp);
+
+    printf("Unknown option: %s\n", arg);
   }
 }
 
-void default_option(FILE **fp) {
-  int ccount = count_chars(fp);
-  int wcount = count_words(fp);
-  int lcount = count_lines(fp);
-
-  printf("Characters: %d\n", ccount);
-  printf("Words: %d\n", wcount);
-  printf("Lines: %d\n", lcount);
-  printf("Total Bytes: %d\n", ccount);
-}
-
 int parse_command(int argc, char **argv) {
-  int i = 1;
-
   if (argc == 1) {
     printf("Error: Required arguments not supplied.\n");
     return EXIT_FAILURE;
   }
 
-  while (i != argc) {
-    select_command(argv[i]);
-    i++;
+  FILE *fp;
+  int top = -1;
+  char **command_stack = init_stack(argc);
+  if (command_stack == NULL) {
+    printf("Error: Unable to parse the commands.\n");
+    return EXIT_FAILURE;
   }
+
+  for (int i = 1; i < argc; i++) {
+    if (is_option(argv[i]) != 0) {
+      fp = fopen(argv[i], "r");
+
+      if (fp == NULL) {
+        printf("Error: cannot open file\n");
+        return EXIT_FAILURE;
+      }
+    } else {
+      push_command(argv[i], &top, &command_stack);
+    }
+  }
+
+  while (top != -1) {
+    init_command(pop_command(&top, command_stack), fp);
+  }
+
+  free(command_stack);
+  free(fp);
 
   return EXIT_SUCCESS;
 }

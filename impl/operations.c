@@ -1,4 +1,4 @@
-#include "../include/cwc.h"
+#include "../include/operations.h"
 
 #include <stdio.h>
 
