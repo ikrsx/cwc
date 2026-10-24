@@ -11,9 +11,9 @@ char **init_stack(int size) {
   return stack;
 }
 
-void push_command(char *arg, int *top, char ***command_stack) {
-  (*top)++;
-  *command_stack[*top] = arg;
+void push_command(char *arg, int *top, char **command_stack) {
+  ++(*top);
+  command_stack[*top] = arg;
 }
 
 char *pop_command(int *top, char **command_stack) {

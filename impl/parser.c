@@ -60,9 +60,10 @@ int parse_command(int argc, char **argv) {
     return EXIT_FAILURE;
   }
 
-  FILE *fp;
+  FILE *fp = NULL;
   int top = -1;
   char **command_stack = init_stack(argc);
+
   if (command_stack == NULL) {
     printf("Error: Unable to parse the commands.\n");
     return EXIT_FAILURE;
@@ -77,16 +78,20 @@ int parse_command(int argc, char **argv) {
         return EXIT_FAILURE;
       }
     } else {
-      push_command(argv[i], &top, &command_stack);
+      push_command(argv[i], &top, command_stack);
     }
   }
 
   while (top != -1) {
-    init_command(pop_command(&top, command_stack), fp);
+    char *cmd = pop_command(&top, command_stack);
+    init_command(cmd, fp);
   }
 
-  free(command_stack);
-  free(fp);
+  if (command_stack != NULL)
+    free(command_stack);
+
+  if (fp != NULL)
+    free(fp);
 
   return EXIT_SUCCESS;
 }
