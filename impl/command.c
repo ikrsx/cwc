@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "../include/command.h"
 #include "../include/operations.h"
-#include "../include/parser.h"
 #include "../include/stack.h"
 
 int is_option(char *arg) {
@@ -54,44 +54,32 @@ void init_command(char *arg, FILE *fp) {
   }
 }
 
-int parse_command(int argc, char **argv) {
-  if (argc == 1) {
-    printf("Error: Required arguments not supplied.\n");
-    return EXIT_FAILURE;
+command parse_command(int argc, char **argv) {
+  command cmd;
+  int command_stack_top = -1;
+  int file_stack_top = -1;
+
+  cmd.command_stack = init_stack(argc);
+  if (sizeof(cmd.command_stack) == 0) {
+    fprintf(stderr, "Error: Unable to allocate command stack.\n");
+    cmd.exit_code = EXIT_FAILURE;
+    return cmd;
   }
 
-  FILE *fp = NULL;
-  int top = -1;
-  char **command_stack = init_stack(argc);
-
-  if (command_stack == NULL) {
-    printf("Error: Unable to parse the commands.\n");
-    return EXIT_FAILURE;
+  cmd.file_stack = init_stack(argc);
+  if (sizeof(cmd.file_stack) == 0) {
+    fprintf(stderr, "Error: Unable to allocate file stack.\n");
+    cmd.exit_code = EXIT_FAILURE;
+    return cmd;
   }
 
   for (int i = 1; i < argc; i++) {
     if (is_option(argv[i]) != 0) {
-      fp = fopen(argv[i], "r");
-
-      if (fp == NULL) {
-        printf("Error: cannot open file\n");
-        return EXIT_FAILURE;
-      }
+      push_stack(argv[i], &file_stack_top, cmd.file_stack);
     } else {
-      push_command(argv[i], &top, command_stack);
+      push_stack(argv[i], &command_stack_top, cmd.command_stack);
     }
   }
 
-  while (top != -1) {
-    char *cmd = pop_command(&top, command_stack);
-    init_command(cmd, fp);
-  }
-
-  if (command_stack != NULL)
-    free(command_stack);
-
-  if (fp != NULL)
-    free(fp);
-
-  return EXIT_SUCCESS;
+  return cmd;
 }
