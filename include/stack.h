@@ -9,6 +9,6 @@ typedef struct stack stack;
 
 stack init_stack_string(int size);
 void push_stack(char *arg, stack *stack);
-char *pop_stack(int *top, char **command_stack);
+stack pop_stack(stack *stack);
 
 #endif // STACK_H

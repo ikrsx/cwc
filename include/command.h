@@ -12,6 +12,6 @@ struct command {
 typedef struct command command;
 
 command parse_command(int argc, char **argv);
-void run_commands(command *cmd);
+void run_commands(command cmd);
 
 #endif // PARSER_H

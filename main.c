@@ -16,5 +16,7 @@ int main(int argc, char *argv[]) {
     return cmd.exit_code;
   }
 
+  run_commands(cmd);
+
   return EXIT_SUCCESS;
 }

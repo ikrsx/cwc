@@ -53,6 +53,30 @@ void init_command(char *arg, FILE *fp) {
   }
 }
 
+void run_commands(command cmd) {
+  for (int i = cmd.file_stack.top; i > 0; i--) {
+    FILE *fp = fopen(cmd.file_stack.strings[i], "r");
+    if (fp == NULL) {
+      fprintf(stderr, "Error: File %s does not exsists.\n",
+              cmd.file_stack.strings[i]);
+      break;
+    }
+
+    int command_stack_top = cmd.command_stack.top;
+    if (command_stack_top == 0) {
+      init_command("", fp);
+    } else {
+      printf("\n----- %s ------\n", cmd.file_stack.strings[i]);
+      for (int j = command_stack_top; j > 0; j--) {
+        init_command(cmd.command_stack.strings[j], fp);
+        command_stack_top--;
+      }
+    }
+
+    fclose(fp);
+  }
+}
+
 command parse_command(int argc, char **argv) {
   command cmd;
 
