@@ -5,7 +5,6 @@
 
 #include "../include/command.h"
 #include "../include/operations.h"
-#include "../include/stack.h"
 
 int is_option(char *arg) {
   regex_t regex;
@@ -56,17 +55,15 @@ void init_command(char *arg, FILE *fp) {
 
 command parse_command(int argc, char **argv) {
   command cmd;
-  int command_stack_top = -1;
-  int file_stack_top = -1;
 
-  cmd.command_stack = init_stack(argc);
+  cmd.command_stack = init_stack_string(argc);
   if (sizeof(cmd.command_stack) == 0) {
     fprintf(stderr, "Error: Unable to allocate command stack.\n");
     cmd.exit_code = EXIT_FAILURE;
     return cmd;
   }
 
-  cmd.file_stack = init_stack(argc);
+  cmd.file_stack = init_stack_string(argc);
   if (sizeof(cmd.file_stack) == 0) {
     fprintf(stderr, "Error: Unable to allocate file stack.\n");
     cmd.exit_code = EXIT_FAILURE;
@@ -75,9 +72,9 @@ command parse_command(int argc, char **argv) {
 
   for (int i = 1; i < argc; i++) {
     if (is_option(argv[i]) != 0) {
-      push_stack(argv[i], &file_stack_top, cmd.file_stack);
+      push_stack(argv[i], &cmd.file_stack);
     } else {
-      push_stack(argv[i], &command_stack_top, cmd.command_stack);
+      push_stack(argv[i], &cmd.command_stack);
     }
   }
 

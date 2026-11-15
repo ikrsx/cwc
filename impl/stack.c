@@ -2,18 +2,15 @@
 
 #include "../include/stack.h"
 
-char **init_stack(int size) {
-  char **stack = malloc(size * sizeof(char *));
-
-  if (stack == NULL)
-    return NULL;
-
+stack init_stack_string(int size) {
+  stack stack;
+  stack.strings = malloc(size * sizeof(char *));
   return stack;
 }
 
-void push_stack(char *arg, int *top, char **command_stack) {
-  ++(*top);
-  command_stack[*top] = arg;
+void push_stack(char *arg, stack *stack) {
+  stack->top++;
+  stack->strings[stack->top] = arg;
 }
 
 char *pop_stack(int *top, char **command_stack) {
