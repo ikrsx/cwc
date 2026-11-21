@@ -26,26 +26,28 @@ void init_command(char *arg, FILE *fp) {
   } else if (strncmp(arg, "--characters", sizeof("--characters")) == 0 ||
              strncmp(arg, "-c", sizeof("-c")) == 0) {
 
-    (fp == NULL) ? printf("Error: file does not seems to exists.\n")
-                 : printf("Characters: %d\n", count_chars(&fp));
+    printf("Characters: %d\n", count_chars(&fp));
 
   } else if (strncmp(arg, "--words", sizeof("--words")) == 0 ||
              strncmp(arg, "-w", sizeof("-w")) == 0) {
 
-    (fp == NULL) ? printf("Error: file does not seems to exists.\n")
-                 : printf("Words: %d\n", count_words(&fp));
+    printf("Words: %d\n", count_words(&fp));
 
   } else if (strncmp(arg, "--lines", sizeof("--lines")) == 0 ||
              strncmp(arg, "-l", sizeof("-l")) == 0) {
 
-    (fp == NULL) ? printf("Error: file does not seems to exists.\n")
-                 : printf("Lines: %d\n", count_lines(&fp));
+    printf("Lines: %d\n", count_lines(&fp));
 
   } else if (strncmp(arg, "--bytes", sizeof("--bytes")) == 0 ||
              strncmp(arg, "-b", sizeof("-b")) == 0) {
 
-    (fp == NULL) ? printf("Error: file does not seems to exists.\n")
-                 : printf("Words: %d\n", count_words(&fp));
+    printf("Words: %d\n", count_words(&fp));
+
+  } else if (strncmp(arg, "", sizeof("")) == 0) {
+
+    printf("Characters: %d\n", count_chars(&fp));
+    printf("Words: %d\n", count_words(&fp));
+    printf("Lines: %d\n", count_lines(&fp));
 
   } else {
 
@@ -54,26 +56,42 @@ void init_command(char *arg, FILE *fp) {
 }
 
 void run_commands(command cmd) {
-  for (int i = cmd.file_stack.top; i > 0; i--) {
-    FILE *fp = fopen(cmd.file_stack.strings[i], "r");
-    if (fp == NULL) {
-      fprintf(stderr, "Error: File %s does not exsists.\n",
-              cmd.file_stack.strings[i]);
-      break;
-    }
-
-    int command_stack_top = cmd.command_stack.top;
-    if (command_stack_top == 0) {
-      init_command("", fp);
-    } else {
-      printf("\n----- %s ------\n", cmd.file_stack.strings[i]);
-      for (int j = command_stack_top; j > 0; j--) {
-        init_command(cmd.command_stack.strings[j], fp);
-        command_stack_top--;
+  if (cmd.file_stack.top == 0) {
+    for (int i = cmd.command_stack.top; i > 0; i--) {
+      if (strncmp(cmd.command_stack.strings[i], "--version",
+                  sizeof("--version")) == 0) {
+        init_command("--version", NULL);
+        break;
       }
     }
+  } else if (cmd.command_stack.top > 0 && cmd.file_stack.top > 0) {
+    for (int i = cmd.file_stack.top; i > 0; i--) {
+      for (int j = cmd.command_stack.top; j > 0; j--) {
+        FILE *fp = fopen(cmd.file_stack.strings[i], "r");
 
-    fclose(fp);
+        if (fp == NULL) {
+          fprintf(stderr, "Error: File %s does not exists.\n",
+                  cmd.file_stack.strings[i]);
+        } else {
+          printf("\n------ %s ------\n", cmd.file_stack.strings[i]);
+          init_command(cmd.command_stack.strings[j], fp);
+          fclose(fp);
+        }
+      }
+    }
+  } else if (cmd.command_stack.top == 0) {
+    for (int i = cmd.file_stack.top; i > 0; i--) {
+      FILE *fp = fopen(cmd.file_stack.strings[i], "r");
+
+      if (fp == NULL) {
+        fprintf(stderr, "Error: File %s does not exists.\n",
+                cmd.file_stack.strings[i]);
+      } else {
+        printf("\n------ %s ------\n", cmd.file_stack.strings[i]);
+        init_command("", fp);
+        fclose(fp);
+      }
+    }
   }
 }
 
